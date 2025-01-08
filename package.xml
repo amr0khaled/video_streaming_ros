@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>video_stream</name>
+  <version>0.1.0</version>
+  <description>Stream video from Publisher to Subscribers using OpenCV and Flask. And it can be viewed using Qt app "video_stream/app.py" or any web browser at the specified IP Address, Or You can use the IP Address as an REST API for streaming, BUT USE "img" HTML TAGNAME not "video" AND THE IP ADDRESS AS "src" ATTRIBUTE.</description>
+  <maintainer email="amr0khaled0x@gmail.com">amr0khaled</maintainer>
+  <license>Apache-2.0</license>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

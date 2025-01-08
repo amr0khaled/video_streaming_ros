@@ -1,0 +1,6 @@
+default:
+	colcon build --packages-select $(ROS_PACKAGE)
+run:
+	ros2 run ${p} ${e}
+all:
+	colcon build

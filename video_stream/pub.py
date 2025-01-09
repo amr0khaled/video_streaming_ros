@@ -1,112 +1,18 @@
-
-from typing import Any, Sequence
+from typing import Any
 import rclpy as rc
 from rclpy.node import Node
 import std_msgs.msg as types
-from json import JSONEncoder
 import cv2
 
-
-jsen = JSONEncoder()
-
-json_data = [
-  {
-    "name": "John Doe",
-    "age": 32,
-    "salary": 75000,
-    "jobTitle": "Software Engineer"
-  },
-  {
-    "name": "Jane Smith",
-    "age": 27,
-    "salary": 60000,
-    "jobTitle": "Data Analyst"
-  },
-  {
-    "name": "Bob Brown",
-    "age": 41,
-    "salary": 90000,
-    "jobTitle": "Product Manager"
-  },
-  {
-    "name": "Alice Johnson",
-    "age": 29,
-    "salary": 65000,
-    "jobTitle": "UX Designer"
-  },
-  {
-    "name": "Mike Davis",
-    "age": 35,
-    "salary": 70000,
-    "jobTitle": "DevOps Engineer"
-  },
-  {
-    "name": "Emily Chen",
-    "age": 28,
-    "salary": 62000,
-    "jobTitle": "Marketing Specialist"
-  },
-  {
-    "name": "David Lee",
-    "age": 40,
-    "salary": 85000,
-    "jobTitle": "Sales Manager"
-  },
-  {
-    "name": "Sarah Taylor",
-    "age": 25,
-    "salary": 58000,
-    "jobTitle": "Customer Support"
-  },
-  {
-    "name": "Kevin White",
-    "age": 38,
-    "salary": 72000,
-    "jobTitle": "IT Manager"
-  },
-  {
-    "name": "Lisa Nguyen",
-    "age": 30,
-    "salary": 68000,
-    "jobTitle": "Financial Analyst"
-  }
-]
-
-
-
-
-
-
-
 class Pub(Node):
-    mimetype ='multipart/x-mixed-replace; boundary=frame'
     def __init__(self):
-        super().__init__('Pubber')
-        self.counter = 0
+        super().__init__('Video Streaming Publisher')
         self.get_logger().info('Started')
-        self.pub = self.create_publisher(types.String, 'YOU', 10)
         self.stream_pub = self.create_publisher(types.UInt8MultiArray, 'Stream', 1)
-        self.index = 0
 
-        # self.create_timer(0.001, self.send_stream)
+        # Start Streaming
         self.send_stream()
-    def timer(self):
-        self.counter += 1
-        self.get_logger().info(f'{self.counter}')
-        msg = types.String()
-        msg.data = f'THIS IS NUMBER = {self.counter}'
-        self.pub.publish(msg)
-    def send_msg(self):
-        msg = types.String()
-        if self.index == len(json_data):
-            self.index = self.index % len(json_data)
-        msg.data = f'JSON msg: {self.to_json(json_data[self.index])}'
-        self.get_logger().info("I Send: %s" % msg.data)
-        self.index+=1
-        self.pub.publish(msg)
 
-    def to_json(self, data: dict[str, Any]):
-        return jsen.encode(data)
     def send_stream(self):
         msg = types.UInt8MultiArray()
         for i in generate():

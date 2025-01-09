@@ -10,12 +10,13 @@ Stream video from Publisher to Subscribers using OpenCV and Flask. And it can be
 1. Copy "Makefile.build" to ros projects directory
 2. Rename it to "Makefile"
 3. Copy this script to your shell config file e.g.".bashrc" or ".zshrc"
-  Bash:
+
+  - Bash:
 ```bash
 source ~/{ros_projects}/install/setup.bash
 source {ros_location}/{ros_distro}/setup.bash
 ```
-  Zsh:
+  - Zsh:
 ```zsh
 source ~/{ros_projects}/install/setup.zsh
 source {ros_location}/{ros_distro}/setup.zsh

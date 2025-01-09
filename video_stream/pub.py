@@ -5,39 +5,37 @@ import std_msgs.msg as types
 import cv2
 
 class Pub(Node):
-    def __init__(self):
-        super().__init__('Video Streaming Publisher')
-        self.get_logger().info('Started')
-        self.stream_pub = self.create_publisher(types.UInt8MultiArray, 'Stream', 1)
+  def __init__(self):
+    super().__init__('Video_Streaming_Publisher')
+    self.get_logger().info('Started')
+    self.stream_pub = self.create_publisher(types.UInt8MultiArray, 'Stream', 1)
 
-        # Start Streaming
-        self.send_stream()
+    # Start Streaming
+    self.send_stream()
 
-    def send_stream(self):
-        msg = types.UInt8MultiArray()
-        for i in generate():
-            msg.data = i
-            self.get_logger().info('SEnd a frame of stream')
-            self.stream_pub.publish(msg)
+  def send_stream(self):
+    msg = types.UInt8MultiArray()
+    for i in generate():
+      msg.data = i
+      self.get_logger().info('SEnd a frame of stream')
+      self.stream_pub.publish(msg)
 
 
 def generate():
-    camera = cv2.VideoCapture(0)  # Change to 1, 2, etc., if multiple cameras are available
-    while True:
-        # Read a frame from the camera
-        sucess, frame = camera.read()
-        if not sucess:
-            break
-        # Encode the frame as JPEG
-        sucess, jpeg = cv2.imencode('.jpg', frame)
-        if not sucess:
-            break
-        # Convert the JPEG to byte data
-        jpeg_data: bytes = jpeg.tobytes()
-        # Yield the frame as a part of the MJPEG stream
-        yield list(jpeg_data)
-        #yield (b'--frame\r\n'
-        #       b'Content-Type: image/jpeg\r\n\r\n' + jpeg_data + b'\r\n\r\n')
+  camera = cv2.VideoCapture(0)  # Change to 1, 2, etc., if multiple cameras are available
+  while True:
+    # Read a frame from the camera
+    sucess, frame = camera.read()
+    if not sucess:
+        break
+    # Encode the frame as JPEG
+    sucess, image = cv2.imencode('.jpg', frame)
+    if not sucess:
+        break
+    # Convert the JPEG to byte data
+    image_data: bytes = image.tobytes()
+    # Yield the frame as a part of the MJPEG stream
+    yield list(image_data)
 
 
 def main(args: list[str] | None=None):

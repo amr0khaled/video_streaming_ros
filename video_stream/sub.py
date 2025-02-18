@@ -3,22 +3,31 @@ from typing import Any, Never
 import rclpy as rc
 from rclpy.node import Node
 import std_msgs.msg as types
+from sensor_msgs.msg import Image
 from flask import Flask, Response
 import threading as threads
+import cv_bridge
+import cv2
 
+bridge = cv_bridge.CvBridge()
 
 class Sub(Node):
   def __init__(self, callback):
     super().__init__('Video_Streaming_Subscriber') 
     self.get_logger().info('Started')
-    self.stream_sub = self.create_subscription(types.UInt8MultiArray, 'Stream', self.stream_listen, 1)
+    self.stream_sub = self.create_subscription(Image, 'Stream', self.stream_listen, 1)
     self.send_callback = callback
 
-  def stream_listen(self, msg: types.UInt8MultiArray):
-    raw = bytes(msg.data)
-    self.get_logger().info('I get a stream frame')
-    data = (b'--frame\r\n' + b'Content-Type: image/jpeg\r\n\r\n' + raw + b'\r\n\r\n')
-    self.send_callback(data)
+  def stream_listen(self, msg: Image):
+    try:
+      image_cv = bridge.imgmsg_to_cv2(msg)
+      success, image = cv2.imencode('.jpg', image_cv);
+      self.get_logger().info('I get a stream frame in %s' % msg.header.stamp.sec)
+      data = (b'--frame\r\n' + b'Content-Type: image/jpeg\r\n\r\n' + image.tobytes() + b'\r\n\r\n')
+      self.send_callback(data)
+    except cv_bridge.CvBridgeError or cv2.Error:
+      print("error")
+      pass
 
 queue: list[bytes] = []
 
@@ -28,7 +37,7 @@ def send_queue(data: bytes):
 def gen():
   while True:
     if queue:
-      message = queue.pop(0)
+      message = queue.pop()
       yield message
 
 def start_server(app: Flask, stream_generator: Generator[bytes, Any, Never]):
